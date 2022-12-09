@@ -127,6 +127,10 @@ class CtaEngine(BaseEngine):
         self.event_engine.register(EVENT_TRADE, self.process_trade_event)
         self.event_engine.register(EVENT_POSITION, self.process_position_event)
 
+        #为了策略能打印日志
+        log_engine = self.main_engine.get_engine("log")
+        self.event_engine.register(EVENT_CTA_LOG, log_engine.process_log_event)
+
     def init_datafeed(self) -> None:
         """
         Init datafeed client.
@@ -555,6 +559,8 @@ class CtaEngine(BaseEngine):
         symbol, exchange = extract_vt_symbol(vt_symbol)
         end: datetime = datetime.now(DB_TZ)
         start: datetime = end - timedelta(days)
+        #从整点开始load_bar，主要为了4小时线能够和aicoin一致
+        start = start.replace(hour=0, minute=0, second=0, microsecond=0)
         bars: List[BarData] = []
 
         # Pass gateway and datafeed if use_database set to True
