@@ -127,10 +127,6 @@ class CtaEngine(BaseEngine):
         self.event_engine.register(EVENT_TRADE, self.process_trade_event)
         self.event_engine.register(EVENT_POSITION, self.process_position_event)
 
-        #为了策略能打印日志
-        log_engine = self.main_engine.get_engine("log")
-        self.event_engine.register(EVENT_CTA_LOG, log_engine.process_log_event)
-
     def init_datafeed(self) -> None:
         """
         Init datafeed client.
